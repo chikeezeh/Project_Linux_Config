@@ -135,3 +135,10 @@ application.secret_key = 'Add your secret key'
 ```
 
 10. restart apache and go to 18.219.29.211 to launch the app.
+
+# Resources
+https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps
+
+https://suhas.org/sqlalchemy-tutorial/
+
+https://www.postgresql.org/docs/9.1/static/sql-grant.html
