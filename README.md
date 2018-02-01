@@ -61,6 +61,77 @@ The web server was configured with these steps;
 
 27.	Go to 18.219.29.211 to check if apache is working
 
-28.	Run ``sudo apt-get install libapache2-mod-wsgi```
+28.	Run ```sudo apt-get install libapache2-mod-wsgi```
 
-29.	Run ```sudo apt-get install postgresql``
+29.	Run ```sudo apt-get install postgresql```
+
+# Configuring the database
+
+1. run ```sudo su postgres``` to switch to the postgres user.
+
+2. type ```psql``` to change to the Postgresql terminal.
+
+3. create a new database called catalog with ``` CREATE DATABASE catalog;```
+
+4. create user ```CREATE USER catalog WITH PASSWORD 'catalog';```
+
+5. grant privileges with ```GRANT ALL PRIVILEGES ON DATABASE catalog TO catalog;```
+
+# Configuring Apache2
+1. installed mod-wsgi with ```sudo apt-get install libapache2-mod-wsgi```
+
+2. edited ```/etc/apache2/sites-enabled/000-default.conf``` file by adding ```WSGIScriptAlias / /var/www/FlaskApp2/flaskapp2.wsgi``` before the ending ```<VirtualHost *:80>``` block.
+
+3. created a FlaskApp2.conf file with ```sudo nano /etc/apache2/sites-available/FlaskApp.conf``` and added the following block of code to it;
+```HTML
+  <VirtualHost *:80>
+          ServerName 18.219.29.211
+          ServerAdmin ezeh.chike
+          WSGIScriptAlias / /var/www/FlaskApp2/flaskapp2.wsgi
+          <Directory /var/www/FlaskApp2/FlaskApp2/>
+                  Order allow,deny
+                  Allow from all
+          </Directory>
+          Alias /static /var/www/FlaskApp2/FlaskApp2/static
+          <Directory /var/www/FlaskApp2/FlaskApp2/static/>
+                  Order allow,deny
+                  Allow from all
+          </Directory>
+          ErrorLog ${APACHE_LOG_DIR}/error.log
+          LogLevel warn
+          CustomLog ${APACHE_LOG_DIR}/access.log combined
+  </VirtualHost>
+```
+4. resarted apache2 with ```sudo apache2ctl restart```
+
+# Deploying the Flask app
+
+1. installed git with ```sudo apt-get install git```
+
+2. intalled python and all the app dependencies.
+
+3. cloned the catalog app with ```git clone https://github.com/chikeezeh/Project_Item_Catalog.git ```
+
+4. checked out the linux branch from the repo with ```sudo git checkout linux```
+
+5. Changed the ownership of all the files in the project with ```chown grader:grader * ```
+
+6. arranged my folder structure as shown in this [article](https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps)
+
+7. run ```python database_setup.py``` to create the database
+
+8. run ```python populate_database.py``` to populate the database
+
+9. put the following code in the flaskapp2.wsgi file ;
+```python
+#!/usr/bin/python
+import sys
+import logging
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0, "/var/www/FlaskApp2/")
+
+from FlaskApp2 import app as application
+application.secret_key = 'Add your secret key'
+```
+
+10. restart apache and go to 18.219.29.211 to launch the app.
