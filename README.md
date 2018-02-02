@@ -65,6 +65,8 @@ The web server was configured with these steps;
 
 29.	Run ```sudo apt-get install postgresql```
 
+30. Enabled automatic update with ```sudo dpkg-reconfigure --priority=low unattended-upgrades```
+
 # Configuring the database
 
 1. run ```sudo su postgres``` to switch to the postgres user.
